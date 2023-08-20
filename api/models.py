@@ -1,6 +1,7 @@
 from django.db import models
 from dateutil.relativedelta import relativedelta
 import datetime
+from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 #validator
@@ -28,6 +29,7 @@ class Person(models.Model):
     Street = models.CharField(max_length=50)
     City = models.CharField(max_length=50)
     Country = models.CharField(max_length=50)
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
     class Meta:
         db_table = 'Person'
     
