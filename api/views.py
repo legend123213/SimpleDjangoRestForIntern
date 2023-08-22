@@ -1,20 +1,42 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt import authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import HttpResponse
 from api.Permission import IsInGroup
-
+from api.Serializer import *
+from api.models import *
+import json
 
 class PersonalInfo(APIView):
     permission_classes = [IsAuthenticated, IsInGroup]
 
     def post(self, request):
-        return Response(data="Create user Person")
+       
+        print(type(UserSerializer(request.user).data))
+        print(request.user.email)
+        user = request.data
+        userrr =  UserSerializer(request.user).data
+        
+        # user['user']=userrr
+        instance = PersonSerializer(data =  user)
+        if instance.is_valid(raise_exception=True):
+            instance.save()
+            return Response(data=instance.data)
+        else:
+            return Response(data = "hello i do not think so")
+        
 
     def get(self, request):
-        return Response(data="get user information")
+        
+        users = User.objects.get(id = request.user.id)
+        
+        user = get_object_or_404(Person)
+        
+        instance = PersonSerializer(user)
+        return Response(data=instance.data)
+        
 
     def put(self, request):
         return Response("update user information")
@@ -79,7 +101,11 @@ class PersonSkills(APIView):
         return Response(data="Create user Skill")
 
     def get(self, request):
-        return Response(data="get user skills")
+        skills = Skill.objects.all()
+        print(skills)
+        instance = SkillSerializer(skills)
+        print(instance)
+        return Response(data=instance.data)
 
     def delete(self, request):
         return Response("delete user skills")

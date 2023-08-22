@@ -12,6 +12,7 @@ def RateValidator(rate):
 class Skill(models.Model):
     language = models.CharField(max_length=15)
     Rate = models.IntegerField(validators=[RateValidator])
+    
     @property
     def get_skillformat(self):
         return (self.language,self.Rate)
@@ -25,11 +26,11 @@ class Person(models.Model):
     Email = models.EmailField(primary_key=True,unique=True)
     PhoneNumber = models.IntegerField()
     SelfDescribtion = models.TextField()
-    Skills = models.ManyToManyField(Skill)
     Street = models.CharField(max_length=50)
     City = models.CharField(max_length=50)
     Country = models.CharField(max_length=50)
-    user = models.OneToOneField(User,on_delete=models.CASCADE)
+    Skills = models.ManyToManyField(Skill)
+    # user = models.OneToOneField(User,on_delete=models.CASCADE)
     class Meta:
         db_table = 'Person'
     
