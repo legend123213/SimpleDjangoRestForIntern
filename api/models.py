@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
 # validator
-# RateValidator = lambda input: None if input <= 10 else ValidationError("Please rate the skill between 0 to 10")
+RateValidator = lambda input: None if input <= 10 else ValidationError("Please rate the skill between 0 to 10")
 
 
 def RateValidator(rate):
@@ -31,7 +31,7 @@ class Person(models.Model):
     BirthDate = models.DateField(
         default=(datetime.datetime.now().date() - relativedelta(years=18)))
     Email = models.EmailField(primary_key=True, unique=True)
-    PhoneNumber = models.IntegerField()
+    SelfDescribtion = models.IntegerField()
     SelfDescribtion = models.TextField()
     Street = models.CharField(max_length=50)
     City = models.CharField(max_length=50)

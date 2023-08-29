@@ -29,16 +29,18 @@ class PersonalInfo(APIView):
         
 
     def get(self, request):
-        print(request.user)
+       
         users = User.objects.get(id = request.user.id)  
         user =get_object_or_404(Person,user_id=users.id)
         instance = PersonSerializer(user)
-        print(instance)
+        
         return Response(data=instance.data)
         
 
     def put(self, request):
         data = request.data
+        data['user_id'] = request.user.id
+        data['Email']= request.user.email
         user =get_object_or_404(Person,user_id=request.user.id)
         instance = PersonSerializer(data=data,instance=user)
         instance.is_valid(raise_exception=True)
@@ -56,6 +58,7 @@ class PersonExperiance(APIView):
 
     def post(self, request):
         data = request.data
+        data['Email'] = Person.objects.get(user_id=request.user.id)
         data['Email_id'] = request.user.email 
         instance = ExperienceSerializer(data=data)
         instance.is_valid(raise_exception=True)
@@ -93,7 +96,18 @@ class Experiance(APIView):
             return Response(data=instance.data,status=status.HTTP_200_OK)
 
     def put(self, request, id):
-        return Response({"it is deleted" + str(id)})
+        data = request.data
+        data['Email_id'] = request.user.email
+        if 'id' in data : del data['id']
+        user_experiances = Experience.objects.filter(Email_id = request.user.email)
+        id_list =[int(id_num.id) for id_num in user_experiances]
+        if id not in id_list:
+            return Response(data = "there is no Project",status=status.HTTP_400_BAD_REQUEST)
+        user_project = Experience.objects.get(Email_id = request.user.email)
+        instance = ExperienceSerializer(data=data,instance=user_project)
+        instance.is_valid(raise_exception=True)
+        instance.save()
+        return Response(data=instance.data)
 
     def delete(self, request,id):
         user_experiance = Experience.objects.filter(Email_id = request.user.email)
@@ -147,12 +161,13 @@ class Projects(APIView):
     def put(self, request, id):
         data = request.data
         data['PersonId_id'] = request.user.email
-        del data['id']
+        if 'id' in data : del data["id"]
         user_projects = Project.objects.filter(PersonId_id = request.user.email)
+        
         id_list =[int(id_num.id) for id_num in user_projects]
         if id not in id_list:
             return Response(data = "there is no Project",status=status.HTTP_400_BAD_REQUEST)
-        user_project = Project.objects.get(PersonId_id = request.user.email)
+        user_project = user_projects.get(id =id)
         instance = ProjectSerializer(data=data,instance=user_project)
         instance.is_valid(raise_exception=True)
         instance.save()
@@ -163,7 +178,7 @@ class Projects(APIView):
         id_list =[int(id_num.id) for id_num in user_projects]
         if id not in id_list:
             return Response(data = "there is no Project",status=status.HTTP_404_NOT_FOUND)
-        user_project = Person.objects.get(id = id)
+        user_project = user_projects.get(id=id)
         user_project.delete()
         return Response(data={'message' :'deleted succussfully.'},status=status.HTTP_200_OK)
 
@@ -203,20 +218,31 @@ class Skills(APIView):
         if id not in id_list:
             return Response(data = "there is no Skill",status=status.HTTP_400_BAD_REQUEST)
         else:
-            user_skill = Skill.objects.get(id = id)
+            user_skill = user_skills.get(id = id)
             instance = SkillSerializer(user_skill)
             return Response(data=instance.data,status=status.HTTP_200_OK)
 
 
     def put(self, request, id):
-        return Response({"it is deleted" + str(id)})
+        data = request.data
+        data['user_id']= request.user.email
+        if 'id' in data : del data['id']
+        user_skills = Skill.objects.filter(user_id = request.user.email)
+        id_list =[int(id_num.id) for id_num in user_skills]
+        if id not in id_list:
+            return Response(data = "there is no Skill",status=status.HTTP_400_BAD_REQUEST)
+        user_skill = user_skills.get(id = id )
+        instance = SkillSerializer(instance=user_skill,data = data)
+        instance.is_valid(raise_exception=True)
+        instance.save()
+        return Response(data =instance.data,status=status.HTTP_200_OK )
 
-    def delete(self, request):
+    def delete(self, request,id):
         user_skills = Skill.objects.filter(user_id = request.user.email)
         id_list =[int(id_num.id) for id_num in user_skills]
         if id not in id_list:
             return Response(data = "there is no skill",status=status.HTTP_404_NOT_FOUND)
-        user_skill = Skill.objects.get(id = id)
+        user_skill = user_skills.get(id = id)
         user_skill.delete()
         return Response(data={'message' :'deleted succussfully.'},status=status.HTTP_200_OK)
 
@@ -228,8 +254,16 @@ class Resume(APIView):
     def post(self, request):
         return Response(data="the link to download or the file to download")
 
-    def get(self, request,):
-        return Response(data="get the link to view")
+    def get(self, request):
+        users = User.objects.get(id = request.user.id)  
+        user =get_object_or_404(Person,user_id=users.id)
+        instance = PersonSerializer(user).data
+        name = instance['FullName'].split()
+    
+        instance['F_name'] = name[0]
+        instance['L_name'] = name[0]
+        print(name)
+        return render(request,'index1.html',instance)
 
     def put(self, request,):
         return Response({"it is deleted" + str()})
@@ -244,6 +278,7 @@ class Register(APIView):
             user = instance.save()
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
+            print(refresh)
             return Response({'access_token': access_token}, status=status.HTTP_201_CREATED)
         return Response(instance.errors, status=status.HTTP_400_BAD_REQUEST)
 class LoginUser(APIView):
