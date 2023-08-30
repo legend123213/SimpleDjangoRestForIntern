@@ -1,0 +1,176 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+
+<html>
+   <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <title></title>
+      <meta name="description" content="">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="{% static 'css/style1.css' %}">
+   </head>
+   <body>
+   <div class="container">
+  <div class="header">
+    <div class="full-name">
+      <span class="first-name">{{F_name}}</span> 
+      <span class="last-name">{{L_name}}</span>
+    </div>
+    <div class="contact-info">
+      <span class="email">Email: </span>
+      <span class="email-val">{{Email}}</span>
+      <span class="separator"></span>
+      <span class="phone">Phone: </span>
+      <span class="phone-val">{{PhoneNumber}}</span>
+    </div>
+    
+    <div class="about">
+      <span class="position">{{UserRoll}}</span>
+      <span class="desc">
+        {{SelfDescribtion}} 
+      </span>
+    </div>
+  </div>
+   <div class="details">
+    <div class="section">
+      <div class="section__title">Experience</div>
+      {% for i in experience_set %}
+      <div class="section__list">
+        <div class="section__list-item">
+          <div class="left">
+            <div class="name">{{i.NameOfCompany}}</div>
+            <div class="addr">{{i.Country}},{{i.City}},{{i.Street}}</div>
+            <div class="duration">{{i.DateFrom}} - {{i.DateTo}}</div>
+          </div>
+          <div class="right">
+            <div class="name">{{i.Role}}</div>
+            <div class="desc">{{i.DescribtionOfWork}}</div>
+          </div>
+        </div>
+        {% endfor %}
+                <div class="section__list-item">
+          <div class="left">
+            <div class="name">Akount</div>
+            <div class="addr">San Monica, CA</div>
+            <div class="duration">Jan 2011 - Feb 2015</div>
+          </div>
+          <div class="right">
+            <div class="name">Fr developer</div>
+            <div class="desc">did This and that</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="section">
+      <div class="section__title">Education</div>
+      {% for i in education_set %}
+      <div class="section__list">
+        <div class="section__list-item">
+          <div class="left">
+            <div class="name">{{i.NameOfSchool}}</div>
+            <div class="addr">{{i.Country}},{{i.City}} , {{i.Street}}</div>
+            <div class="duration">{{i.DateFrom}} - {{i.DateTo}}</div>
+          </div>
+          <div class="right">
+            <div class="name">{{i.CertifiedWith}}</div>
+            <div class="desc">{{i.DescribtionOfWork}}</div>
+          </div>
+        </div>
+        {% endfor %}
+        <div class="section__list-item">
+          <div class="left">
+            <div class="name">Akount</div>
+            <div class="addr">San Monica, CA</div>
+            <div class="duration">Jan 2011 - Feb 2015</div>
+          </div>
+          <div class="right">
+            <div class="name">Fr developer</div>
+            <div class="desc">did This and that</div>
+          </div>
+        </div>
+
+      </div>
+      
+  </div>
+     <div class="section">
+      <div class="section__title">Projects</div> 
+       <div class="section__list">
+         <div class="section__list-item">
+           <div class="name">DSP</div>
+           <div class="text">I am a front-end developer with more than 3 years of experience writing html, css, and js. I'm motivated, result-focused and seeking a successful team-oriented company with opportunity to grow.</div>
+         </div>
+         
+         <div class="section__list-item">
+                    <div class="name">DSP</div>
+           <div class="text">I am a front-end developer with more than 3 years of experience writing html, css, and js. I'm motivated, result-focused and seeking a successful team-oriented company with opportunity to grow. <a href="/login">link</a>
+           </div>
+         </div>
+       </div>
+    </div>
+     <div class="section">
+       <div class="section__title">Skills</div>
+       <div class="skills">
+         <div class="skills__item">
+           <div class="left"><div class="name">
+             Javascript
+             </div></div>
+           <div class="right">
+                          <input  id="ck1" type="checkbox" checked/>
+
+             <label for="ck1"></label>
+                          <input id="ck2" type="checkbox" checked/>
+
+              <label for="ck2"></label>
+                         <input id="ck3" type="checkbox" />
+
+              <label for="ck3"></label>
+                           <input id="ck4" type="checkbox" />
+            <label for="ck4"></label>
+                          <input id="ck5" type="checkbox" />
+              <label for="ck5"></label>
+
+           </div>
+         </div>
+         
+       </div>
+       <div class="skills__item">
+           <div class="left"><div class="name">
+             CSS</div></div>
+           <div class="right">
+                          <input  id="ck1" type="checkbox" checked/>
+
+             <label for="ck1"></label>
+                          <input id="ck2" type="checkbox" checked/>
+
+              <label for="ck2"></label>
+                         <input id="ck3" type="checkbox" />
+
+              <label for="ck3"></label>
+                           <input id="ck4" type="checkbox" />
+            <label for="ck4"></label>
+                          <input id="ck5" type="checkbox" />
+              <label for="ck5"></label>
+
+           </div>
+         </div>
+         
+       </div>
+     <div class="section">
+     <div class="section__title">
+       Interests
+       </div>
+       <div class="section__list">
+         <div class="section__list-item">
+                  Football, programming.
+          </div>
+       </div>
+     </div>
+     </div>
+  </div>
+</div>
+   </body>
+</html>
