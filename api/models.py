@@ -31,7 +31,8 @@ class Person(models.Model):
     BirthDate = models.DateField(
         default=(datetime.datetime.now().date() - relativedelta(years=18)))
     Email = models.EmailField(primary_key=True, unique=True)
-    SelfDescribtion = models.IntegerField()
+    PhoneNumber = models.CharField(max_length=30)
+    UserRoll = models.CharField(max_length=40)
     SelfDescribtion = models.TextField()
     Street = models.CharField(max_length=50)
     City = models.CharField(max_length=50)
@@ -67,3 +68,16 @@ class Project(models.Model):
 
     class Meta:
         db_table = 'Project'
+class Education(models.Model):
+    Person = models.ForeignKey(Person,on_delete=models.DO_NOTHING)
+    NameOfSchool = models.CharField(max_length=30)
+    Street = models.CharField(max_length=50)
+    City = models.CharField(max_length=50)
+    Country = models.CharField(max_length=50)
+    DescribtionOfWork = models.TextField() 
+    CertifiedWith  = models.CharField(max_length=20)
+    DateFrom = models.DateField(blank=True)
+    DateTo = models.DateField(blank=True)
+class Language(models.Model):
+    Person = models.ForeignKey(Person,on_delete=models.CASCADE)
+    Language  = models.CharField(max_length=50)

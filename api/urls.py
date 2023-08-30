@@ -13,4 +13,6 @@ urlpatterns = [
     path("register/",views.Register.as_view(),name = 'user-register'),
     path("resume/",views.Resume.as_view()),
      path("login/",views.LoginUser.as_view(),name = 'user-register'),
+     path("personal/educations/",views.Educations.as_view(),name='personal-educations'),
+     path("personal/education/<int:id>",views.Educationpersonal.as_view(),name='personal-education'),
 ]

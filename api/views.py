@@ -259,10 +259,10 @@ class Resume(APIView):
         user =get_object_or_404(Person,user_id=users.id)
         instance = PersonSerializer(user).data
         name = instance['FullName'].split()
-    
+       
         instance['F_name'] = name[0]
-        instance['L_name'] = name[0]
-        print(name)
+        instance['L_name'] = name[1]
+        print(instance['UserRoll'])
         return render(request,'index1.html',instance)
 
     def put(self, request,):
@@ -296,5 +296,51 @@ class LoginUser(APIView):
         
             
             return Response(data = {"message user not found"} ,status=status.HTTP_400_BAD_REQUEST)
-    
+class Educations(APIView):
+    def get(self,request):
+        user = Education.objects.filter(Person_id = request.user.email)
+        instance = EducationSerializer(user,many=True)
+        return Response(data=instance.data,status=status.HTTP_200_OK)
+    def post(self,request):
+        userdata = request.data
+        userdata['Person_id'] = request.user.email
+        if id in userdata : del userdata['id']
+        instance = EducationSerializer(data=userdata)
+        instance.is_valid(raise_exception=True)
+        instance.save()
+        return Response(data=instance.data,status=status.HTTP_201_CREATED)
+    def delete(self,request):
+        user = Education.objects.get(Person_id = request.user.email)
+        user.delete()
+        return Response(data={"message":"deleted succeful"},status=status.HTTP_200_OK)
+class Educationpersonal(APIView):
+    def get(self,request,id):
+        userdata = Education.objects.filter(Person_id = request.user.email)
+        list_of_education = [user.id for user in userdata]
+        if id in list_of_education:
+            instance = EducationSerializer(userdata.get(id=id))
+            return Response(data=instance.data ,status=status.HTTP_200_OK)
+        
+        return Response(data = {"message":"there no education list"},status=status.HTTP_404_NOT_FOUND)
+    def put(self,request,id):
+        education = request.data
+        userdata = Education.objects.filter(Person_id = request.user.email)
+        list_of_education = [user.id for user in userdata]
+        if id in list_of_education:
+            instance = EducationSerializer(instance= userdata.get(id=id),data=education)
+            instance.is_valid(raise_exception=True)
+            instance.save()
+            return Response(data=instance.data ,status=status.HTTP_200_OK)
+        return Response(data={"message":"you can not edit"},status=status.HTTP_400_BAD_REQUEST)
+    def delete(self,request,id):
+        userdata = Education.objects.filter(Person_id = request.user.email)
+        list_of_education = [user.id for user in userdata]
+        if id in list_of_education:
+            delete_data = userdata.get(id= id)
+            instance = EducationSerializer(delete_data.delete())
+
+            return Response(data=instance.data ,status=status.HTTP_200_OK)
+        return Response(data={"message":"you can not edit"},status=status.HTTP_400_BAD_REQUEST)
+        
+     
     

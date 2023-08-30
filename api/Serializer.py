@@ -7,7 +7,19 @@ from django.contrib.auth import authenticate
 
         
             
+class EducationSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only = True)
+    Person_id = serializers.CharField(write_only=True)
+    class Meta:
+        model = Education
+        fields = ['id','NameOfSchool','CertifiedWith','Street','City','Country','DescribtionOfWork','DateFrom','DateTo','Person_id']
 
+class LanguageSerialzer(serializers.ModelSerializer):
+    id = serializers.IntegerField(read_only = True)
+    Person_id = serializers.CharField()
+    class Meta:
+        model = Language
+        fields = ['id','Person_id','Language']
 class SkillSerializer(serializers.ModelSerializer):
     person_set = 'PersonSerializer'
     
@@ -52,10 +64,12 @@ class PersonSerializer(serializers.ModelSerializer):
     project_set = ProjectSerializer(read_only = True,many = True)
     experience_set = ExperienceSerializer(read_only = True,many = True)
     skill_set = SkillSerializer(read_only = True,many =  True)
+    language_set = LanguageSerialzer(read_only = True,many = True)
+    education_set = EducationSerializer(read_only = True,many = True)
     class Meta:
         model = Person
         depth = 1
-        fields= ['FullName' ,'BirthDate','Email','PhoneNumber','SelfDescribtion','Street','City','Country','experience_set','project_set','skill_set','user_id']
+        fields= ['FullName' ,'BirthDate','UserRoll','PhoneNumber','Email','PhoneNumber','SelfDescribtion','Street','City','Country','experience_set','project_set','skill_set','user_id','language_set','education_set']
     def create(self, validated_data):
         check =Person.objects.filter(Email = validated_data.get('Email'))
         if check.count()>2:
@@ -68,6 +82,3 @@ class PersonSerializer(serializers.ModelSerializer):
         return person
  
 
-
-
-   
