@@ -15,4 +15,6 @@ urlpatterns = [
      path("login/",views.LoginUser.as_view(),name = 'user-register'),
      path("personal/educations/",views.Educations.as_view(),name='personal-educations'),
      path("personal/education/<int:id>",views.Educationpersonal.as_view(),name='personal-education'),
+      path("personal/languages/",views.Personal_languages.as_view(),name='personal-educations'),
+     path("personal/language/<int:id>",views.Person_language.as_view(),name='personal-education'),
 ]

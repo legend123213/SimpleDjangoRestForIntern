@@ -47,7 +47,7 @@
           </div>
           <div class="right">
             <div class="name">{{i.Role}}</div>
-            <div class="desc">{{i.DescribtionOfWork}}</div>
+            <div class="desc">{{'i.DescribtionOfWork'}}</div>
           </div>
         </div>
         {% endfor %}
@@ -69,15 +69,15 @@
       <div class="section__title">Education</div>
       {% for i in education_set %}
       <div class="section__list">
-        <div class="section__list-item">
+        <div class="section__list-item ed">
           <div class="left">
             <div class="name">{{i.NameOfSchool}}</div>
             <div class="addr">{{i.Country}},{{i.City}} , {{i.Street}}</div>
             <div class="duration">{{i.DateFrom}} - {{i.DateTo}}</div>
           </div>
-          <div class="right">
+          <div class="right ed">
             <div class="name">{{i.CertifiedWith}}</div>
-            <div class="desc">{{i.DescribtionOfWork}}</div>
+            <div class="desc"><p>{{i.DescribtionOfWork}}ajklsfkljasdlkfjasldkjfas;kldjfaskldjflkasdfjasdlkfjasdjofiwjeljfwoejfaklsjdfoaweifjwealkfjasoidjflasdkjfasioj</p></div>
           </div>
         </div>
         {% endfor %}

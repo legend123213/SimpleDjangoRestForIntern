@@ -98,7 +98,7 @@ body {
     margin-bottom: 0;
   }
   
-  .left ,
+  
   .right {
     vertical-align: top;
     display: inline-block;
@@ -109,7 +109,7 @@ body {
   }
   
   .right {
-    tex-align: right;
+    text-align: left;
     width: 39%;    
   }
   
@@ -154,4 +154,14 @@ body {
       background: #79A9CE;
     }
   }
+  .ed {
+    display:flex;
+    flex-direction:column
+  }
+  .desc {
+  white-space: wrap;
+}
+p {
+  width: 4px;
+}
 }

@@ -198,6 +198,8 @@ class PersonSkills(APIView):
 
     def get(self, request):
         SkillInstance =  Skill.objects.filter(user_id = request.user.email)
+        if SkillInstance.count ==0:
+            return Response(data={"user skill":SkillInstance},status=status.HTTP_404_NOT_FOUND)
         Instance = SkillSerializer(SkillInstance,many=True)
         return Response(data=Instance.data)
 
@@ -228,6 +230,7 @@ class Skills(APIView):
         data['user_id']= request.user.email
         if 'id' in data : del data['id']
         user_skills = Skill.objects.filter(user_id = request.user.email)
+       
         id_list =[int(id_num.id) for id_num in user_skills]
         if id not in id_list:
             return Response(data = "there is no Skill",status=status.HTTP_400_BAD_REQUEST)
@@ -299,6 +302,8 @@ class LoginUser(APIView):
 class Educations(APIView):
     def get(self,request):
         user = Education.objects.filter(Person_id = request.user.email)
+        if user.count ==0:
+            return Response(data={"user education":user},status=status.HTTP_404_NOT_FOUND)
         instance = EducationSerializer(user,many=True)
         return Response(data=instance.data,status=status.HTTP_200_OK)
     def post(self,request):
@@ -311,11 +316,14 @@ class Educations(APIView):
         return Response(data=instance.data,status=status.HTTP_201_CREATED)
     def delete(self,request):
         user = Education.objects.get(Person_id = request.user.email)
+        if user.count ==0:
+            return Response(data={"data":user},status=status.HTTP_404_NOT_FOUND)
         user.delete()
         return Response(data={"message":"deleted succeful"},status=status.HTTP_200_OK)
 class Educationpersonal(APIView):
     def get(self,request,id):
         userdata = Education.objects.filter(Person_id = request.user.email)
+       
         list_of_education = [user.id for user in userdata]
         if id in list_of_education:
             instance = EducationSerializer(userdata.get(id=id))
@@ -325,6 +333,7 @@ class Educationpersonal(APIView):
     def put(self,request,id):
         education = request.data
         userdata = Education.objects.filter(Person_id = request.user.email)
+       
         list_of_education = [user.id for user in userdata]
         if id in list_of_education:
             instance = EducationSerializer(instance= userdata.get(id=id),data=education)
@@ -334,6 +343,7 @@ class Educationpersonal(APIView):
         return Response(data={"message":"you can not edit"},status=status.HTTP_400_BAD_REQUEST)
     def delete(self,request,id):
         userdata = Education.objects.filter(Person_id = request.user.email)
+       
         list_of_education = [user.id for user in userdata]
         if id in list_of_education:
             delete_data = userdata.get(id= id)
@@ -342,5 +352,52 @@ class Educationpersonal(APIView):
             return Response(data=instance.data ,status=status.HTTP_200_OK)
         return Response(data={"message":"you can not edit"},status=status.HTTP_400_BAD_REQUEST)
         
-     
-    
+class Personal_languages(APIView):
+    def get(self,request):
+        data = Language.objects.filter(Person_id = request.user.email)
+        if data.count ==0:
+            return Response(data={"user":data},status=status.HTTP_404_NOT_FOUND)
+        instance = LanguageSerialzer(data,many =True)
+        return Response(data=instance.data,status=status.HTTP_200_OK)
+    def post(self,request):
+        user_data = request.data
+        user_data['Person_id'] = request.user.email
+        instance = LanguageSerialzer(data=user_data)
+        instance.is_valid(raise_exception=True)
+        instance.save()
+        return Response(data=instance.data,status=status.HTTP_201_CREATED) 
+    def delete(self,request):
+        data = Language.objects.filter(Person_id = request.user.email)
+        user_deleted_data = data.delete()
+        instance = LanguageSerialzer(user_deleted_data)
+        return Response(data=instance.data,status=status.HTTP_200_OK)
+class Person_language(APIView):
+    def get(self,request,id):
+        user_language = Language.objects.filter(Person_id = request.user.email)
+        user_id_list = [user.id for user in user_language]
+        if id not in user_id_list:
+            return Response(data={"message":"you can not edit"},status=status.HTTP_400_BAD_REQUEST)
+        instance = LanguageSerialzer(user_language.get(id=id))
+
+        return Response(data=instance.data,status=status.HTTP_200_OK)
+    def put(self,request,id):
+        user_data = request.data
+        if 'id' in user_data: del user_data['id']
+        user_data['Person_id'] = request.user.email
+        user_language = Language.objects.filter(Person_id = request.user.email)
+        user_id_list = [user.id for user in user_language]
+        if id not in user_id_list:
+            return Response(data={"message":"you can not edit"},status=status.HTTP_400_BAD_REQUEST)
+        instance = LanguageSerialzer(data=user_data,instance=user_language.get(id = id))
+        instance.is_valid(raise_exception=True)
+        instance.save()
+        return Response(data=instance.data,status=status.HTTP_200_OK)
+    def delete(self,request,id):
+        user_languages = Language.objects.filter(Person_id = request.user.email)
+        id_list =[int(id_num.id) for id_num in user_languages]
+        if id not in id_list:
+            return Response(data = "there is no language",status=status.HTTP_404_NOT_FOUND)
+        user_language = user_languages.get(id = id)
+        user_language.delete()
+        return Response(data={'message' :'deleted succussfully.'},status=status.HTTP_200_OK)
+
