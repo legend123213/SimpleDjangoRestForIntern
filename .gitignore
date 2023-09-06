@@ -1,1 +1,45 @@
+# Django
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Python
+*.pyc
+*.pyo
+
+# Virtual Environment
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# Pipenv
+Pipfile.lock
+
+# IDE files
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Database
+db.sqlite3
+
+# Media files
+media/
+
+# Compiled Python files
+*.pyc
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter Notebook
+.ipynb_checkpoints/
 .vscode
