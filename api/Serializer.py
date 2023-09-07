@@ -69,7 +69,7 @@ class PersonSerializer(serializers.ModelSerializer):
     class Meta:
         model = Person
         depth = 1
-        fields= ['FullName' ,'BirthDate','UserRoll','PhoneNumber','Email','PhoneNumber','SelfDescribtion','Street','City','Country','experience_set','project_set','skill_set','user_id','language_set','education_set']
+        fields= ['FullName' ,'BirthDate','UserRoll','PhoneNumber','Email','SelfDescribtion','Street','City','Country','experience_set','project_set','skill_set','user_id','language_set','education_set']
     def create(self, validated_data):
         check =Person.objects.filter(Email = validated_data.get('Email'))
         if check.count()>2:

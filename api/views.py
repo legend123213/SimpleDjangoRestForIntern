@@ -1,6 +1,5 @@
 from django.shortcuts import render,get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from rest_framework_simplejwt import authentication
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -23,14 +22,15 @@ class PersonalInfo(APIView):
         instance = PersonSerializer(data =  user)
         if instance.is_valid(raise_exception=True):
             instance.save()
-            return Response(data=instance.data)
+            return Response(data=instance.data,status= status.HTTP_201_CREATED)
         else:
-            return Response(data = "hello i do not think so")
+            return Response(data = "can not create",status=status.HTTP_400_BAD_REQUEST)
         
 
     def get(self, request):
        
-        users = User.objects.get(id = request.user.id)  
+        users = User.objects.get(id = request.user.id) 
+         
         user =get_object_or_404(Person,user_id=users.id)
         instance = PersonSerializer(user)
         
@@ -50,7 +50,6 @@ class PersonalInfo(APIView):
     def delete(self,request):
         user_data = Person.objects.filter(user_id = request.user.email)
         delete = user_data.delete()
-        print(delete)
         return Response(data={'message' :'all user personal Information deleted succussfully.'},status=status.HTTP_200_OK)
 
 class PersonExperiance(APIView):
@@ -75,7 +74,6 @@ class PersonExperiance(APIView):
     def delete(self, request):
         user_data = Experience.objects.filter(Email_id = request.user.email)
         delete = user_data.delete()
-        print(delete)
         return Response(data={'message' :'all user skills deleted succussfully.'},status=status.HTTP_200_OK)
 
 
@@ -139,7 +137,6 @@ class PersonProject(APIView):
     def delete(self, request):
         user_data = Project.objects.filter(PersonId_id = request.user.email)
         delete = user_data.delete()
-        print(delete)
         return Response(data={'message' :'all user Projects deleted succussfully.'},status=status.HTTP_200_OK)
 
 
@@ -206,7 +203,6 @@ class PersonSkills(APIView):
     def delete(self, request):
         user_data = Skill.objects.filter(user_id = request.user.email)
         delete = user_data.delete()
-        print(delete)
         return Response(data={'message' :'all user skills deleted succussfully.'},status=status.HTTP_200_OK)
 
 
@@ -265,7 +261,7 @@ class Resume(APIView):
        
         instance['F_name'] = name[0]
         instance['L_name'] = name[1]
-        print(instance['UserRoll'])
+        
         return render(request,'index1.html',instance)
 
     def put(self, request,):
@@ -281,7 +277,7 @@ class Register(APIView):
             user = instance.save()
             refresh = RefreshToken.for_user(user)
             access_token = str(refresh.access_token)
-            print(refresh)
+            
             return Response({'access_token': access_token}, status=status.HTTP_201_CREATED)
         return Response(instance.errors, status=status.HTTP_400_BAD_REQUEST)
 class LoginUser(APIView):
@@ -289,12 +285,14 @@ class LoginUser(APIView):
         data =  request.data
         username = data['username']
         password = data['password']
-        user = authentication
+        
         user = authenticate(request, username=username, password=password)
-        print(user)
+        
         if user is not None:
-            login(request, user)
-            return Response(data={"message":"login success"},status=status.HTTP_200_OK)
+            refresh = RefreshToken.for_user(user)
+            access_token = str(refresh.access_token)
+            
+            return Response({'access_token': access_token}, status=status.HTTP_200_OK)
         else:
         
             
@@ -332,8 +330,9 @@ class Educationpersonal(APIView):
         return Response(data = {"message":"there no education list"},status=status.HTTP_404_NOT_FOUND)
     def put(self,request,id):
         education = request.data
+        education["Person_id"] = request.user.email
         userdata = Education.objects.filter(Person_id = request.user.email)
-       
+        
         list_of_education = [user.id for user in userdata]
         if id in list_of_education:
             instance = EducationSerializer(instance= userdata.get(id=id),data=education)
