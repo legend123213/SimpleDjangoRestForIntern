@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'djoser',
+    'wkhtmltopdf',
     'api'
    
 ]
@@ -133,7 +134,15 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+WKHTMLTOPDF_CMD = '/usr/bin/wkhtmltopdf'  # Path to wkhtmltopdf executable
+WKHTMLTOPDF_OPTIONS = {
+    'page-size': 'A4',
+    'margin-top': '10mm',
+    'margin-right': '10mm',
+    'margin-bottom': '10mm',
+    'margin-left': '10mm',
+    'background-color':'white'
+}
 
 #rest_framework jwt
 REST_FRAMEWORK = {

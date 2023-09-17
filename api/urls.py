@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-
+from wkhtmltopdf.views import PDFTemplateView
 
 urlpatterns = [
     path("personalinfo/",views.PersonalInfo.as_view(),name = 'personal-profile'),
@@ -17,4 +17,6 @@ urlpatterns = [
      path("personal/education/<int:id>",views.Educationpersonal.as_view(),name='personal-education'),
       path("personal/languages/",views.Personal_languages.as_view(),name='personal-educations'),
      path("personal/language/<int:id>",views.Person_language.as_view(),name='personal-education'),
+     path("personal/resume/download",views.Download_resume.as_view()),
+     path("getit",PDFTemplateView.as_view())
 ]

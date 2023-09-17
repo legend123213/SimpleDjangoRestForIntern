@@ -54,7 +54,7 @@ class Experience(models.Model):
     Role = models.CharField(max_length=20)
     DescribtionOfWork = models.TextField()
     DateFrom = models.DateField(blank=True)
-    DateTo = models.DateField(blank=True)
+    DateTo = models.DateField(null=True,blank=True)
 
     class Meta:
         db_table = 'Experience'
@@ -77,7 +77,14 @@ class Education(models.Model):
     DescribtionOfWork = models.TextField() 
     CertifiedWith  = models.CharField(max_length=20)
     DateFrom = models.DateField(blank=True)
-    DateTo = models.DateField(blank=True)
+    DateTo = models.DateField(null=True,blank=True)
 class Language(models.Model):
     Person = models.ForeignKey(Person,on_delete=models.CASCADE)
     Language  = models.CharField(max_length=50)
+# class Resume(models.Model):
+#     Person_id = models.ForeignKey(Person,on_delete=models.CASCADE,primary_key=True)
+#     Person_skill = models.ForeignKey(Skill,on_delete=models.CASCADE)
+#     Person_experience = models.ForeignKey(Experience,on_delete=models.CASCADE)
+#     Person_education = models.ForeignKey(Education,on_delete=models.CASCADE)
+#     Person_project = models.ForeignKey(Project,on_delete=models.CASCADE)
+#     Person_language = models.ForeignKey(Language,on_delete=models.CASCADE)

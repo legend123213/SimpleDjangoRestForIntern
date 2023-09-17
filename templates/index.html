@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <title></title>
+   <meta name="description" content="">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <link rel="stylesheet" href="/home/legend/Desktop/InterProject/Backend/templates/css/index.css" media="print">
+</head>
+<style>
+   * {
+      background-color: white;
+   }
+</style>
+
+<body>
+   <div class="contain_all">
+      <div class="box small">
+         <div class="intro">
+            <h1 class="name">{{F_name}} {{L_name}}</h1>
+            <h4 class="role">{{UserRoll}}</h4>
+            <ul>
+               <li>{{Street}},{{City}},{{Country}}</li>
+               <li>(+251) {{PhoneNumber}}</li>
+               <li>{{Email}}</li>
+            </ul>
+            <p class="discribtion">{{SelfDescribtion}} </p>
+         </div>
+         <div class="experiance">
+            <h2 class="header">Experiance</h2>
+            {% for i in experience_set %}
+            <div class="exp">
+               <h3 class="title">{{i.NameOfCompany}}
+                  <br><span class="date">{{i.DateFrom}} -
+                       {% if i.DateTo == None %} Now {% else %} {{i.DateTo}}{% endif %}</span> </h3>
+               <p class="discribtion">{{i.DescribtionOfWork}}
+               </p>
+            </div>
+            {% endfor %}
+
+
+         </div>
+         <div class="education">
+            <h2 class="header">Education</h2>
+             {% for i in education_set %}
+            <div>
+               <h3 class="header">{{i.NameOfSchool}}<span class="date">{{i.DateFrom}} -
+                       {% if i.DateTo == None %} Now {% else %} {{i.DateTo}}{% endif %}</span></h3>
+               <p class="discribtion">{{i.DescribtionOfWork}}</p>
+            </div>
+{% endfor %}
+         </div>
+         <div class="project">
+            <h2 class="header">Projects</h2>
+            {% for i in project_set %}
+            <div>
+               <h3 class="header">{{i.NameOfProject}}</h3>
+               <p class="discribtion">{{i.Description}} <a href={{i.Link}}>Link</a></p>
+            </div>
+            {% endfor %}
+         </div>
+
+      </div>
+      <div class="middleline">
+         <div class="divider">
+
+         </div>
+
+      </div>
+      <div class="box big">
+
+
+         <div class="skill">
+            <h2 class="header">Skill</h2>
+            <div class="skills">
+               <ul class="list_skill">
+                  {% for i in skill_set %}
+                  <li>{{i.language}}</li>
+                  {% endfor %}
+               </ul>
+            </div>
+         </div>
+
+      </div>
+   </div>
+
+</body>
+
+</html>

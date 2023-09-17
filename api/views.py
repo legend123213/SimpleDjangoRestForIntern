@@ -7,17 +7,32 @@ from django.http import HttpResponse
 from api.Permission import IsInGroup
 from api.Serializer import *
 from api.models import *
+from xhtml2pdf import pisa
+from io import BytesIO
+from django.template.loader import get_template
 from django.contrib.auth import authenticate, login
 from rest_framework_simplejwt.tokens import RefreshToken
-import json
+from wkhtmltopdf.views import PDFTemplateResponse
 
+
+
+# def render_to_pdf(template_src,data):
+        # template = get_template(template_src)
+        # html = template.render(data)
+        # result = BytesIO()
+        # pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+        # if not pdf.err:
+        #     return HttpResponse(result.getvalue(), content_type='application/pdf')
+            # return None
+        
 class PersonalInfo(APIView):
     permission_classes = [IsAuthenticated,IsInGroup]
 
     def post(self, request):
         user = request.data
-        user['Email'] = request.user.email
-        user['user_id']= request.user.id
+        print(type(user))
+        user["Email"] = request.user.email
+        user["user_id"] = request.user.id
         user['person_id'] = User.objects.get(id = request.user.id)
         instance = PersonSerializer(data =  user)
         if instance.is_valid(raise_exception=True):
@@ -101,7 +116,7 @@ class Experiance(APIView):
         id_list =[int(id_num.id) for id_num in user_experiances]
         if id not in id_list:
             return Response(data = "there is no Project",status=status.HTTP_400_BAD_REQUEST)
-        user_project = Experience.objects.get(Email_id = request.user.email)
+        user_project = Experience.objects.get(id = id)
         instance = ExperienceSerializer(data=data,instance=user_project)
         instance.is_valid(raise_exception=True)
         instance.save()
@@ -269,6 +284,33 @@ class Resume(APIView):
 
     def delete(self, request):
         return Response("delete user Skills")
+class Download_resume(APIView):
+    #authentication_classes = [IsAuthenticated,IsInGroup]
+    def get(self, request):
+            users = User.objects.get(id = request.user.id)  
+            user =get_object_or_404(Person,user_id=users.id)
+            instance = PersonSerializer(user).data
+            name = instance['FullName'].split()
+            instance['F_name'] = name[0]
+            instance['L_name'] = name[1]
+            template = get_template('index.html')
+            context = instance
+            style = '<style>body { background-color: white; }</style>'
+            response = PDFTemplateResponse(request=request,template=template,
+                                   filename="output.pdf",
+                                   context=context,
+                                   show_content_in_browser=True,
+                                   cmd_options = {'quiet': None, 'enable-local-file-access': True}
+                                   )
+
+            return response
+            # pdf = render_to_pdf('index.html', instance)
+            # return HttpResponse(pdf, content_type='application/pdf')
+        # response = HttpResponse(pdf, content_type='application/pdf')
+        # response['Content-Disposition'] = 'inline; filename="example.pdf"'
+        # return response
+
+
 class Register(APIView):
     def post(self,request):
         data = request.data
@@ -298,6 +340,7 @@ class LoginUser(APIView):
             
             return Response(data = {"message user not found"} ,status=status.HTTP_400_BAD_REQUEST)
 class Educations(APIView):
+    permission_classes = [IsAuthenticated, IsInGroup]
     def get(self,request):
         user = Education.objects.filter(Person_id = request.user.email)
         if user.count ==0:
@@ -319,6 +362,7 @@ class Educations(APIView):
         user.delete()
         return Response(data={"message":"deleted succeful"},status=status.HTTP_200_OK)
 class Educationpersonal(APIView):
+    permission_classes = [IsAuthenticated, IsInGroup]
     def get(self,request,id):
         userdata = Education.objects.filter(Person_id = request.user.email)
        
@@ -342,16 +386,16 @@ class Educationpersonal(APIView):
         return Response(data={"message":"you can not edit"},status=status.HTTP_400_BAD_REQUEST)
     def delete(self,request,id):
         userdata = Education.objects.filter(Person_id = request.user.email)
-       
         list_of_education = [user.id for user in userdata]
         if id in list_of_education:
             delete_data = userdata.get(id= id)
-            instance = EducationSerializer(delete_data.delete())
+            delete_data.delete()
 
-            return Response(data=instance.data ,status=status.HTTP_200_OK)
+            return Response(data={"message":"it is deleted successfully"} ,status=status.HTTP_200_OK)
         return Response(data={"message":"you can not edit"},status=status.HTTP_400_BAD_REQUEST)
         
 class Personal_languages(APIView):
+    permission_classes = [IsAuthenticated, IsInGroup]
     def get(self,request):
         data = Language.objects.filter(Person_id = request.user.email)
         if data.count ==0:
@@ -371,6 +415,7 @@ class Personal_languages(APIView):
         instance = LanguageSerialzer(user_deleted_data)
         return Response(data=instance.data,status=status.HTTP_200_OK)
 class Person_language(APIView):
+    permission_classes = [IsAuthenticated, IsInGroup]
     def get(self,request,id):
         user_language = Language.objects.filter(Person_id = request.user.email)
         user_id_list = [user.id for user in user_language]
